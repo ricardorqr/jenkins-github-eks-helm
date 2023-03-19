@@ -1,4 +1,4 @@
-# Using Jenkins and Helm to deploy Spring Boot Applications into EKS
+# Using Jenkins and Helm Chart to deploy Spring Boot Applications into EKS
 
 ### AWS Infrastructure
 
