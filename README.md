@@ -33,7 +33,7 @@ pipeline {
     }
 
     environment {
-        registry = "092369361076.dkr.ecr.us-east-1.amazonaws.com/test-ecr"
+        registry = "012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr"
         GIT_COMMIT = (sh(script: "git rev-parse HEAD", returnStdout: true)).trim()
     }
 
@@ -72,9 +72,9 @@ pipeline {
                     def commitId = GIT_COMMIT[0..5]
                     def buildNumber = "${env.BUILD_NUMBER}"
 
-                    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 092369361076.dkr.ecr.us-east-1.amazonaws.com'
-                    sh "docker tag 092369361076.dkr.ecr.us-east-1.amazonaws.com/test-ecr 092369361076.dkr.ecr.us-east-1.amazonaws.com/test-ecr:${buildNumber}.${commitId}"
-                    sh "docker push 092369361076.dkr.ecr.us-east-1.amazonaws.com/test-ecr:${buildNumber}.${commitId}"
+                    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 012345678901.dkr.ecr.us-east-1.amazonaws.com'
+                    sh "docker tag 012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr 012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr:${buildNumber}.${commitId}"
+                    sh "docker push 012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr:${buildNumber}.${commitId}"
                 }
             }
         }
@@ -88,7 +88,7 @@ pipeline {
     agent any
 
     environment {
-        registry = "092369361076.dkr.ecr.us-east-1.amazonaws.com/test-ecr"
+        registry = "012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr"
         GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
     }
 
@@ -105,7 +105,7 @@ pipeline {
                     kubeconfig(credentialsId: 'Kubeconfig', serverUrl: '') {
                         script {
                             def image = sh(returnStdout: true, script: """
-                                aws ecr describe-images --repository-name test-ecr --region us-east-1 --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags'
+                                aws ecr describe-images --repository-name REPOSITORY_NAME --region us-east-1 --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags'
                             """).trim().substring(2)
 
                             sh("helm list -a")
@@ -114,7 +114,7 @@ pipeline {
 
                             if (exists) {
                                 echo "Update deployment image"
-                                sh ("helm upgrade springboot-app helm --set=image.repository=092369361076.dkr.ecr.us-east-1.amazonaws.com/test-ecr:${image}")
+                                sh ("helm upgrade springboot-app helm --set=image.repository=012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr:${image}")
                             } else {
                                 echo "Create deployment and service manifest"
                                 sh ('helm install springboot-app helm')
