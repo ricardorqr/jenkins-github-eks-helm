@@ -33,7 +33,7 @@ pipeline {
     }
 
     environment {
-        registry = "012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr"
+        registry = "012345678901.dkr.ecr.us-east-1.amazonaws.com/REPOSITORY_NAME"
         GIT_COMMIT = (sh(script: "git rev-parse HEAD", returnStdout: true)).trim()
     }
 
@@ -73,8 +73,8 @@ pipeline {
                     def buildNumber = "${env.BUILD_NUMBER}"
 
                     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 012345678901.dkr.ecr.us-east-1.amazonaws.com'
-                    sh "docker tag 012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr 012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr:${buildNumber}.${commitId}"
-                    sh "docker push 012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr:${buildNumber}.${commitId}"
+                    sh "docker tag 012345678901.dkr.ecr.us-east-1.amazonaws.com/REPOSITORY_NAME 012345678901.dkr.ecr.us-east-1.amazonaws.com/REPOSITORY_NAME:${buildNumber}.${commitId}"
+                    sh "docker push 012345678901.dkr.ecr.us-east-1.amazonaws.com/REPOSITORY_NAME:${buildNumber}.${commitId}"
                 }
             }
         }
@@ -88,7 +88,7 @@ pipeline {
     agent any
 
     environment {
-        registry = "012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr"
+        registry = "012345678901.dkr.ecr.us-east-1.amazonaws.com/REPOSITORY_NAME"
         GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
     }
 
@@ -114,7 +114,7 @@ pipeline {
 
                             if (exists) {
                                 echo "Update deployment image"
-                                sh ("helm upgrade springboot-app helm --set=image.repository=012345678901.dkr.ecr.us-east-1.amazonaws.com/test-ecr:${image}")
+                                sh ("helm upgrade springboot-app helm --set=image.repository=012345678901.dkr.ecr.us-east-1.amazonaws.com/REPOSITORY_NAME:${image}")
                             } else {
                                 echo "Create deployment and service manifest"
                                 sh ('helm install springboot-app helm')
